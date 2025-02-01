@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello Mariel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/canvas-confetti/1.6.0/confetti.browser.min.js"></script>
+    <style>
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 1.5s ease-out forwards;
+        }
+
+        @keyframes heartBeat {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .heart-beat {
+            animation: heartBeat 0.8s infinite;
+        }
+    </style>
+    <script>
+        // Mobile detection function
+        function isMobileDevice() {
+            return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
+        }
+
+        // Check device on page load
+        window.onload = function() {
+            if (isMobileDevice()) {
+                document.getElementById('invitation-content').style.display = 'none';
+                document.getElementById('mobile-warning').style.display = 'block';
+            } else {
+                document.getElementById('invitation-content').style.display = 'block';
+                document.getElementById('mobile-warning').style.display = 'none';
+            }
+        }
+
+        function moveNoButton() {
+            const noButton = document.getElementById("no-btn");
+            let currentXPosition = parseInt(noButton.style.transform.replace("translateX(", "").replace("px)", "").split(",")[0]) || 0;
+            let currentYPosition = parseInt(noButton.style.transform.replace("translateY(", "").replace("px)", "").split(",")[1]) || 0;
+            
+            let newXPosition = currentXPosition + (Math.random() > 0.5 ? 100 : -100);
+            let newYPosition = currentYPosition + (Math.random() > 0.5 ? 100 : -100);
+            
+            noButton.style.transform = `translate(${newXPosition}px, ${newYPosition}px)`;
+        }
+
+        function celebrateYes() {
+            // Change the content to show celebration with beating heart animation
+            document.getElementById('main-content').innerHTML = `
+                <h1 class="text-4xl font-bold text-red-500 mb-4">Yay! 🎉</h1>
+                <p class="text-gray-700 text-lg mb-6">I knew you would say yes!! <span class="heart-beat inline-block">❤️</span></p>
+            `;
+            
+            // Enhanced confetti celebration
+            const duration = 5 * 1000;
+            const animationEnd = Date.now() + duration;
+
+            function randomInRange(min, max) {
+                return Math.random() * (max - min) + min;
+            }
+
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#ff0000', '#ff69b4', '#ff1493', '#ffffff', '#ff8c00']
+            });
+
+            (function frame() {
+                const timeLeft = animationEnd - Date.now();
+
+                if (timeLeft <= 0) return;
+
+                confetti({
+                    particleCount: 5,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0, y: 0.6 },
+                    colors: ['#ff0000', '#ff69b4', '#ff1493', '#ffffff', '#ff8c00']
+                });
+
+                confetti({
+                    particleCount: 5,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1, y: 0.6 },
+                    colors: ['#ff0000', '#ff69b4', '#ff1493', '#ffffff', '#ff8c00']
+                });
+
+                requestAnimationFrame(frame);
+            }());
+        }
+    </script>
+</head>
+<body class="bg-gradient-to-r from-pink-500 to-red-600 flex flex-col items-center justify-center min-h-screen p-4 sm:p-6">
+    <!-- Mobile Warning -->
+    <div id="mobile-warning" class="bg-white shadow-lg rounded-lg p-6 sm:p-8 max-w-md w-full text-center fade-in" style="display: none;">
+       
+        <p class="text-gray-700">Please open it on a computer for the full experience! 💕</p>
+    </div>
+
+    <!-- Main Invitation Content -->
+    <div id="invitation-content" class="bg-white shadow-lg rounded-lg p-6 sm:p-8 max-w-md w-full text-center fade-in">
+        <div id="main-content">
+            <h1 class="text-4xl font-bold text-red-500 mb-4">Hey Mariel, ❤️</h1>
+            <p class="text-gray-700 text-lg mb-6">Would you like to go out with me on Valentine's Day? 💕</p>
+            
+            <div class="flex justify-center space-x-4">
+                <button onclick="celebrateYes()" 
+                    class="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 transition">
+                    Yes 😊
+                </button>
+                <button id="no-btn" 
+                    class="bg-gray-500 text-white px-6 py-2 rounded-lg transition"
+                    onmouseover="moveNoButton()">
+                    No 😢
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
