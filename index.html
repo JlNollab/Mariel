@@ -61,51 +61,87 @@
         }
 
         function celebrateYes() {
-            // Change the content to show celebration with beating heart animation
-            document.getElementById('main-content').innerHTML = `
-                <h1 class="text-4xl font-bold text-red-500 mb-4">Yay! 🎉</h1>
-                <p class="text-gray-700 text-lg mb-6">I knew you would say yes!! <span class="heart-beat inline-block">❤️</span></p>
-            `;
-            
-            // Enhanced confetti celebration
-            const duration = 5 * 1000;
-            const animationEnd = Date.now() + duration;
+    // Change the content to show celebration with beating heart animation
+    document.getElementById('main-content').innerHTML = `
+        <h1 class="text-4xl font-bold text-red-500 mb-4">Yay! 🎉</h1>
+        <p class="text-gray-700 text-lg mb-6">I knew you would say yes!! <span class="heart-beat inline-block">❤️</span></p>
+    `;
+    
+    // Enhanced confetti celebration
+    const duration = 8 * 1000; // Extended to 8 seconds
+    const animationEnd = Date.now() + duration;
+    let skew = 1;
 
-            function randomInRange(min, max) {
-                return Math.random() * (max - min) + min;
-            }
+    function randomInRange(min, max) {
+        return Math.random() * (max - min) + min;
+    }
 
+    // Initial burst
+    confetti({
+        particleCount: 150,
+        spread: 100,
+        origin: { y: 0.6 },
+        colors: ['#ff0000', '#ff69b4', '#ff1493', '#ffffff', '#ff8c00'],
+        ticks: 200,
+        gravity: 1.2,
+        scalar: 1.2,
+        shapes: ['circle', 'square']
+    });
+
+    // Continuous animation
+    (function frame() {
+        const timeLeft = animationEnd - Date.now();
+
+        if (timeLeft <= 0) return;
+
+        // Alternating left-right bursts
+        const shapeOptions = ['circle', 'square', 'star'];
+        
+        // Left side burst
+        confetti({
+            particleCount: 4,
+            angle: 60,
+            spread: 55,
+            origin: { x: 0, y: 0.65 },
+            colors: ['#ff0000', '#ff69b4', '#ff1493', '#ffffff', '#ff8c00'],
+            ticks: 200,
+            gravity: 1,
+            scalar: 1.2,
+            drift: randomInRange(-0.4, 0.4),
+            shapes: [shapeOptions[Math.floor(Math.random() * shapeOptions.length)]]
+        });
+
+        // Right side burst
+        confetti({
+            particleCount: 4,
+            angle: 120,
+            spread: 55,
+            origin: { x: 1, y: 0.65 },
+            colors: ['#ff0000', '#ff69b4', '#ff1493', '#ffffff', '#ff8c00'],
+            ticks: 200,
+            gravity: 1,
+            scalar: 1.2,
+            drift: randomInRange(-0.4, 0.4),
+            shapes: [shapeOptions[Math.floor(Math.random() * shapeOptions.length)]]
+        });
+
+        // Central burst every 1.5 seconds
+        if (timeLeft % 1500 <= 16) {
             confetti({
-                particleCount: 100,
-                spread: 70,
-                origin: { y: 0.6 },
-                colors: ['#ff0000', '#ff69b4', '#ff1493', '#ffffff', '#ff8c00']
+                particleCount: 35,
+                spread: 60,
+                origin: { y: 0.7 },
+                colors: ['#ff0000', '#ff69b4', '#ff1493', '#ffffff', '#ff8c00'],
+                ticks: 200,
+                gravity: 1,
+                scalar: 1.2,
+                shapes: ['heart']
             });
-
-            (function frame() {
-                const timeLeft = animationEnd - Date.now();
-
-                if (timeLeft <= 0) return;
-
-                confetti({
-                    particleCount: 5,
-                    angle: 60,
-                    spread: 55,
-                    origin: { x: 0, y: 0.6 },
-                    colors: ['#ff0000', '#ff69b4', '#ff1493', '#ffffff', '#ff8c00']
-                });
-
-                confetti({
-                    particleCount: 5,
-                    angle: 120,
-                    spread: 55,
-                    origin: { x: 1, y: 0.6 },
-                    colors: ['#ff0000', '#ff69b4', '#ff1493', '#ffffff', '#ff8c00']
-                });
-
-                requestAnimationFrame(frame);
-            }());
         }
+
+        requestAnimationFrame(frame);
+    }());
+}
     </script>
 </head>
 <body class="bg-gradient-to-r from-pink-500 to-red-600 flex flex-col items-center justify-center min-h-screen p-4 sm:p-6">
